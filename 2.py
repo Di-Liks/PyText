@@ -18,21 +18,28 @@ def process_text(input_file, output_file):
     # Словарь для подсчета местоимений
     pronoun_count = {pronoun: 0 for pronoun in pronouns}
     
+    # Переменная с текстом и слова из неё
+    additional_text = "Я люблю ходить на пары"
+    additional_words = additional_text.split()
+    
     new_sentences = []
+    pronoun_counter = 0  # Счетчик всех местоимений
     
     for sentence in sentences:
         words = sentence.split()
         if words:
-            first_word = words[0]  # первое слово в предложении
             new_sentence = []
             
             for word in words:
                 new_sentence.append(word)
-                # Если слово является местоимением, вставляем первое слово и считаем его
+                # Если слово является местоимением, вставляем слово из additional_text и считаем его
                 lower_word = word.lower()
                 if lower_word in pronouns:
                     pronoun_count[lower_word] += 1
-                    new_sentence.append(first_word)
+                    pronoun_counter += 1
+                    # Вставляем слова из additional_text только для первых пяти местоимений
+                    if pronoun_counter <= len(additional_words):
+                        new_sentence.append(additional_words[pronoun_counter - 1])
             
             new_sentences.append(' '.join(new_sentence))
     
@@ -54,6 +61,9 @@ def process_text(input_file, output_file):
     
     # Выводим общее количество местоимений
     print(f"\nОбщее количество местоимений: {total_pronouns}")
+    
+    # Выводим количество слов в переменной
+    print(f"Количество слов в переменной: {len(additional_words)}")
 
 # Указываем имена входного и выходного файла
 input_filename = 'input.txt'
