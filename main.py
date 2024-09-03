@@ -5,9 +5,10 @@ def process_text(input_file, output_file):
     with open(input_file, 'r', encoding='utf-8') as file:
         text = file.read()
     
-    # Разбиваем текст на предложения
+    # Разбиваем текст на предложения с помощью регулярного выражения
     sentences = re.split(r'(?<=[.!?])\s+', text)
     
+    # Список русских местоимений
     pronouns = {'я', 'ты', 'он', 'она', 'оно', 'мы', 'вы', 'они',
                 'меня', 'тебя', 'его', 'её', 'нас', 'вас', 'их',
                 'мне', 'тебе', 'ему', 'ей', 'нам', 'вам', 'им',
@@ -17,10 +18,9 @@ def process_text(input_file, output_file):
     new_sentences = []
     
     for sentence in sentences:
-        # Находим первое слово предложения
         words = sentence.split()
         if words:
-            first_word = words[0]
+            first_word = words[0]  # первое слово в предложении
             new_sentence = []
             
             for word in words:
