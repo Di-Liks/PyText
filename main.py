@@ -18,7 +18,13 @@ def process_text(input_file, output_file):
     # Словарь для подсчета местоимений
     pronoun_count = {pronoun: 0 for pronoun in pronouns}
     
+    # Переменная с текстом и подсчет количества слов
+    additional_text = "Я люблю ходить на пары"
+    additional_words = additional_text.split()
+    additional_word_count = len(additional_words)
+    
     new_sentences = []
+    pronoun_counter = 0  # Счетчик всех местоимений
     
     for sentence in sentences:
         words = sentence.split()
@@ -32,8 +38,13 @@ def process_text(input_file, output_file):
                 lower_word = word.lower()
                 if lower_word in pronouns:
                     pronoun_count[lower_word] += 1
+                    pronoun_counter += 1
                     new_sentence.append(first_word)
-            
+                    # Если количество местоимений равно количеству слов в переменной, вставляем слово из переменной
+                    if pronoun_counter % additional_word_count == 0:
+                        index = (pronoun_counter // additional_word_count) % additional_word_count
+                        new_sentence.append(additional_words[index - 1])  # Извлекаем слово по индексу
+                    
             new_sentences.append(' '.join(new_sentence))
     
     # Объединяем обработанные предложения в текст
@@ -43,11 +54,20 @@ def process_text(input_file, output_file):
     with open(output_file, 'w', encoding='utf-8') as file:
         file.write(new_text)
     
+    # Подсчитываем общее количество местоимений
+    total_pronouns = sum(pronoun_count.values())
+    
     # Выводим количество местоимений в начальном тексте
     print("Подсчет местоимений в тексте:")
     for pronoun, count in pronoun_count.items():
         if count > 0:
             print(f"{pronoun}: {count}")
+    
+    # Выводим общее количество местоимений
+    print(f"\nОбщее количество местоимений: {total_pronouns}")
+    
+    # Выводим количество слов в переменной
+    print(f"Количество слов в переменной: {additional_word_count}")
 
 # Указываем имена входного и выходного файла
 input_filename = 'input.txt'
