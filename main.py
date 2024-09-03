@@ -15,6 +15,9 @@ def process_text(input_file, output_file):
                 'мной', 'тобой', 'им', 'ей', 'нами', 'вами', 'ими',
                 'мой', 'твой', 'его', 'её', 'наш', 'ваш', 'их'}
     
+    # Словарь для подсчета местоимений
+    pronoun_count = {pronoun: 0 for pronoun in pronouns}
+    
     new_sentences = []
     
     for sentence in sentences:
@@ -25,8 +28,10 @@ def process_text(input_file, output_file):
             
             for word in words:
                 new_sentence.append(word)
-                # Если слово является местоимением, вставляем первое слово
-                if word.lower() in pronouns:
+                # Если слово является местоимением, вставляем первое слово и считаем его
+                lower_word = word.lower()
+                if lower_word in pronouns:
+                    pronoun_count[lower_word] += 1
                     new_sentence.append(first_word)
             
             new_sentences.append(' '.join(new_sentence))
@@ -37,6 +42,12 @@ def process_text(input_file, output_file):
     # Записываем новый текст в выходной файл
     with open(output_file, 'w', encoding='utf-8') as file:
         file.write(new_text)
+    
+    # Выводим количество местоимений в начальном тексте
+    print("Подсчет местоимений в тексте:")
+    for pronoun, count in pronoun_count.items():
+        if count > 0:
+            print(f"{pronoun}: {count}")
 
 # Указываем имена входного и выходного файла
 input_filename = 'input.txt'
