@@ -63,20 +63,20 @@ if choice == "1":
     print("Зашифрованный текст:", encrypted_text)
 
     # Запись зашифрованного текста в файл
-    with open("encrypted_text.txt", "w", encoding="utf-8") as file:
+    with open("Output.txt", "w", encoding="utf-8") as file:
         file.write(encrypted_text)
-    print("Зашифрованный текст записан в файл 'encrypted_text.txt'")
+    print("Зашифрованный текст записан в файл 'Output.txt'")
 
 elif choice == "2":
     # Чтение зашифрованного текста из файла
     try:
-        with open("encrypted_text.txt", "r", encoding="utf-8") as file:
+        with open("Output.txt", "r", encoding="utf-8") as file:
             encrypted_text = file.read()
         print("Текст для расшифровки из файла:", encrypted_text)
         
         decrypted_text = decrypt_permutation_cipher(encrypted_text, key)
         print("Расшифрованный текст:", decrypted_text)
     except FileNotFoundError:
-        print("Файл 'encrypted_text.txt' не найден.")
+        print("Файл 'Output.txt' не найден.")
 else:
     print("Некорректный выбор действия.")
