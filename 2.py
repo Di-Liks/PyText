@@ -1,24 +1,63 @@
+import string
+
+# Шифр Цезаря с ключевым словом
+def create_caesar_alphabet(keyword):
+    # Убираем повторяющиеся символы в ключевом слове
+    keyword_unique = ''.join(sorted(set(keyword), key=lambda x: keyword.index(x)))
+
+    # Создаем стандартный алфавит
+    alphabet = string.ascii_lowercase
+
+    # Формируем новый алфавит: сначала идут символы из ключевого слова, затем оставшиеся символы
+    new_alphabet = keyword_unique + ''.join([ch for ch in alphabet if ch not in keyword_unique])
+
+    return new_alphabet
+
+def encrypt_caesar_cipher(text, keyword):
+    new_alphabet = create_caesar_alphabet(keyword)
+    alphabet = string.ascii_lowercase
+
+    encrypted_text = []
+    for char in text:
+        if char.lower() in alphabet:
+            is_upper = char.isupper()
+            idx = alphabet.index(char.lower())
+            encrypted_char = new_alphabet[idx].upper() if is_upper else new_alphabet[idx]
+            encrypted_text.append(encrypted_char)
+        else:
+            encrypted_text.append(char)  # Пропускаем символы, которых нет в алфавите (например, пробелы)
+
+    return ''.join(encrypted_text)
+
+def decrypt_caesar_cipher(text, keyword):
+    new_alphabet = create_caesar_alphabet(keyword)
+    alphabet = string.ascii_lowercase
+
+    decrypted_text = []
+    for char in text:
+        if char.lower() in new_alphabet:
+            is_upper = char.isupper()
+            idx = new_alphabet.index(char.lower())
+            decrypted_char = alphabet[idx].upper() if is_upper else alphabet[idx]
+            decrypted_text.append(decrypted_char)
+        else:
+            decrypted_text.append(char)  # Пропускаем символы, которых нет в алфавите
+
+    return ''.join(decrypted_text)
+
+# Шифр перестановки
 def encrypt_permutation_cipher(text, key):
-    # Убираем пробелы из ключа и проверяем уникальность символов
     key = ''.join(sorted(set(key), key=lambda x: key.index(x)))
 
-    # Определяем длину ключа
     key_length = len(key)
-
-    # Делаем текст кратным длине ключа, заполняя пробелами
     padding_length = (key_length - len(text) % key_length) % key_length
     text += ' ' * padding_length
 
-    # Разбиваем текст на блоки по длине ключа
     blocks = [text[i:i+key_length] for i in range(0, len(text), key_length)]
 
-    # Создаем список для зашифрованного текста
     encrypted_text = []
-
-    # Определяем порядок перестановки символов в соответствии с ключом
     key_order = sorted(range(len(key)), key=lambda k: key[k])
 
-    # Переставляем символы в каждом блоке
     for block in blocks:
         encrypted_block = ''.join([block[i] for i in key_order])
         encrypted_text.append(encrypted_block)
@@ -26,57 +65,58 @@ def encrypt_permutation_cipher(text, key):
     return ''.join(encrypted_text)
 
 def decrypt_permutation_cipher(encrypted_text, key):
-    # Убираем пробелы из ключа и проверяем уникальность символов
     key = ''.join(sorted(set(key), key=lambda x: key.index(x)))
 
-    # Определяем длину ключа
     key_length = len(key)
-
-    # Разбиваем зашифрованный текст на блоки по длине ключа
     blocks = [encrypted_text[i:i+key_length] for i in range(0, len(encrypted_text), key_length)]
 
-    # Создаем список для расшифрованного текста
     decrypted_text = []
-
-    # Определяем порядок перестановки символов в соответствии с ключом
     key_order = sorted(range(len(key)), key=lambda k: key[k])
 
-    # Определяем обратный порядок для расшифровки
     reverse_key_order = [0] * len(key_order)
     for i, pos in enumerate(key_order):
         reverse_key_order[pos] = i
 
-    # Восстанавливаем символы в каждом блоке
     for block in blocks:
         decrypted_block = ''.join([block[i] for i in reverse_key_order])
         decrypted_text.append(decrypted_block)
 
     return ''.join(decrypted_text).rstrip()
 
-# Ввод данных с клавиатуры
-text = input("Введите текст для шифрования или оставьте пустым для расшифровки из файла: ")
-key = input("Введите ключ: ")
-choice = input("Выберите действие (1 - шифрование, 2 - расшифровка): ")
+# Основная программа
+def main():
+    text = input("Введите текст для шифрования или расшифровки: ")
+    key = input("Введите ключ или ключевое слово: ")
 
-if choice == "1":
-    encrypted_text = encrypt_permutation_cipher(text, key)
-    print("Зашифрованный текст:", encrypted_text)
+    print("Выберите тип шифрования:")
+    print("1. Шифр Цезаря с ключевым словом")
+    print("2. Шифр перестановки")
 
-    # Запись зашифрованного текста в файл
-    with open("Output.txt", "w", encoding="utf-8") as file:
-        file.write(encrypted_text)
-    print("Зашифрованный текст записан в файл 'Output.txt'")
+    cipher_type = input("Ваш выбор (1 или 2): ")
 
-elif choice == "2":
-    # Чтение зашифрованного текста из файла
-    try:
-        with open("Output.txt", "r", encoding="utf-8") as file:
-            encrypted_text = file.read()
-        print("Текст для расшифровки из файла:", encrypted_text)
-        
-        decrypted_text = decrypt_permutation_cipher(encrypted_text, key)
-        print("Расшифрованный текст:", decrypted_text)
-    except FileNotFoundError:
-        print("Файл 'Output.txt' не найден.")
-else:
-    print("Некорректный выбор действия.")
+    if cipher_type == "1":
+        choice = input("Выберите действие (1 - шифрование, 2 - расшифровка): ")
+        if choice == "1":
+            encrypted_text = encrypt_caesar_cipher(text, key)
+            print("Зашифрованный текст:", encrypted_text)
+        elif choice == "2":
+            decrypted_text = decrypt_caesar_cipher(text, key)
+            print("Расшифрованный текст:", decrypted_text)
+        else:
+            print("Некорректный выбор действия.")
+    
+    elif cipher_type == "2":
+        choice = input("Выберите действие (1 - шифрование, 2 - расшифровка): ")
+        if choice == "1":
+            encrypted_text = encrypt_permutation_cipher(text, key)
+            print("Зашифрованный текст:", encrypted_text)
+        elif choice == "2":
+            decrypted_text = decrypt_permutation_cipher(text, key)
+            print("Расшифрованный текст:", decrypted_text)
+        else:
+            print("Некорректный выбор действия.")
+    else:
+        print("Некорректный выбор типа шифрования.")
+
+if __name__ == "__main__":
+    main()
