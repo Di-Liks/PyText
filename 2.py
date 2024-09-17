@@ -47,6 +47,33 @@ def decrypt_caesar_cipher(text, keyword):
 
     return ''.join(decrypted_text)
 
+# Функции шифра перестановки
+
+# Функция шифрования методом перестановки
+def encrypt_permutation_cipher(text, key):
+    key_length = len(key)
+    sorted_key_indices = sorted(range(len(key)), key=lambda k: key[k])
+    rows = [text[i:i+key_length] for i in range(0, len(text), key_length)]
+    
+    # Добавляем пробелы, чтобы длина последней строки соответствовала длине ключа
+    if len(rows[-1]) < key_length:
+        rows[-1] += ' ' * (key_length - len(rows[-1]))
+    
+    encrypted_text = ''.join(''.join(row[i] for row in rows) for i in sorted_key_indices)
+    return encrypted_text
+
+# Функция расшифровки методом перестановки
+def decrypt_permutation_cipher(text, key):
+    key_length = len(key)
+    n_rows = len(text) // key_length
+    sorted_key_indices = sorted(range(len(key)), key=lambda k: key[k])
+    unsorted_key_indices = sorted(range(len(sorted_key_indices)), key=lambda k: sorted_key_indices[k])
+
+    columns = [text[i*n_rows:(i+1)*n_rows] for i in range(key_length)]
+    rows = [''.join(columns[i][row] for i in unsorted_key_indices) for row in range(n_rows)]
+
+    return ''.join(rows).rstrip()
+
 # Функция для записи текста в файл
 def write_to_file(text, filename="Output.txt"):
     with open(filename, 'w', encoding='utf-8') as file:
