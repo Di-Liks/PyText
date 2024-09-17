@@ -1,20 +1,22 @@
 import string
 
+# Определяем русский алфавит, включая букву "ё"
+russian_alphabet = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя'
+
 # Функция для создания измененного алфавита на основе ключевого слова
 def create_caesar_alphabet(keyword):
     keyword = keyword.lower()  # Приводим ключевое слово к нижнему регистру
     keyword_unique = ''.join(sorted(set(keyword), key=keyword.index))  # Убираем дубликаты символов
-    alphabet = string.ascii_lowercase  # Стандартный алфавит
 
-    # Создаем новый алфавит: ключевое слово + оставшиеся буквы алфавита
-    new_alphabet = keyword_unique + ''.join([ch for ch in alphabet if ch not in keyword_unique])
+    # Создаем новый алфавит: ключевое слово + оставшиеся буквы русского алфавита
+    new_alphabet = keyword_unique + ''.join([ch for ch in russian_alphabet if ch not in keyword_unique])
     
     return new_alphabet
 
-# Функция шифрования шифром Цезаря с ключевым словом
+# Функция шифрования шифром Цезаря с ключевым словом для русского алфавита
 def encrypt_caesar_cipher(text, keyword):
     new_alphabet = create_caesar_alphabet(keyword)  # Измененный алфавит
-    alphabet = string.ascii_lowercase  # Оригинальный алфавит
+    alphabet = russian_alphabet  # Оригинальный русский алфавит
 
     encrypted_text = []
     for char in text:
@@ -28,10 +30,10 @@ def encrypt_caesar_cipher(text, keyword):
 
     return ''.join(encrypted_text)
 
-# Функция расшифровки шифра Цезаря с ключевым словом
+# Функция расшифровки шифра Цезаря с ключевым словом для русского алфавита
 def decrypt_caesar_cipher(text, keyword):
     new_alphabet = create_caesar_alphabet(keyword)  # Измененный алфавит
-    alphabet = string.ascii_lowercase  # Оригинальный алфавит
+    alphabet = russian_alphabet  # Оригинальный алфавит
 
     decrypted_text = []
     for char in text:
@@ -47,22 +49,22 @@ def decrypt_caesar_cipher(text, keyword):
 
 # Функция для записи текста в файл
 def write_to_file(text, filename="Output.txt"):
-    with open(filename, 'w') as file:
+    with open(filename, 'w', encoding='utf-8') as file:
         file.write(text)
 
 # Функция для чтения текста из файла
 def read_from_file(filename="Output.txt"):
-    with open(filename, 'r') as file:
+    with open(filename, 'r', encoding='utf-8') as file:
         return file.read()
 
 # Основная программа
 def main():
     print("Выберите тип шифрования:")
-    print("1. Шифр Цезаря с ключевым словом")
+    print("1. Шифр Цезаря с ключевым словом (русский алфавит)")
     print("2. Шифр перестановки")
 
     cipher_type = input("Ваш выбор (1 или 2): ")  # Выбор типа шифрования
-    key = input("Введите ключевое слово: ")  # Ввод ключа
+    key = input("Введите ключевое слово (на русском): ")  # Ввод ключа
 
     match cipher_type:
         case "1":
